@@ -8,7 +8,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="camera_plugin_example"
+        android:label="自定义照相机"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
