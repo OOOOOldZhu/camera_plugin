@@ -7,6 +7,7 @@ package com.z.camera_plugin;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -56,59 +57,79 @@ public class AIResult {
                         return emotion;
                     }
                 case "gender":
-                    try{
+                    try {
                         String s = new JSONObject(res).getJSONObject("data").getJSONArray("result").getJSONObject(0).get("gender").toString();
                         return s;
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         return "fail";
                     }
                 case "age":
-                    try{
+                    try {
                         String s = new JSONObject(res).getJSONObject("data").getJSONArray("result").getJSONObject(0).get("age").toString();
                         return s;
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         return "fail";
                     }
                 case "skin":
-                    try{
+                    try {
                         String s = new JSONObject(res).getJSONObject("data").getJSONArray("result").getJSONObject(0).get("skin").toString();
                         return s;
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         return "fail";
                     }
                 case "glasses":
-                    try{
+                    try {
                         String s = new JSONObject(res).getJSONObject("data").getJSONArray("result").getJSONObject(0).get("glasses").toString();
                         return s;
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         return "fail";
                     }
                 case "beauty":
-                    try{
+                    try {
                         String s = new JSONObject(res).getJSONObject("data").getJSONArray("result").getJSONObject(0).get("beauty").toString();
                         return s;
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         return "fail";
                     }
                 case "carLicense":
-                    try{
+                    try {
                         String s = new JSONObject(res).getJSONObject("data").getJSONObject("words_result").get("number").toString();
                         return s;
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         return "fail";
                     }
                 case "ocr":
-                    try{
-                        String s = new JSONObject(res).getJSONObject("data").get("result").toString().replaceAll("\\n","");
+                    try {
+                        String s = new JSONObject(res).getJSONObject("data").get("result").toString().replaceAll("\\n", "");
                         return s;
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         return "fail";
                     }
                 default:
                     return "fail";
             }
         } else if (isFace.equalsIgnoreCase("1")) {
-            return "fail";
+            switch (type) {
+                case "0": //  植物
+                case "1": // 动物
+                    try {
+                        JSONArray jsonArray = new JSONObject(res).getJSONObject("data").getJSONArray("result");
+                        double bigest = 0.0;
+                        String name = "";
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            String s = jsonArray.getJSONObject(i).get("score").toString();
+                            if (Double.parseDouble(s) > bigest) {
+                                bigest = Double.parseDouble(s);
+                                name = jsonArray.getJSONObject(i).get("name").toString();
+                            }
+                        }
+                        return name;
+                    } catch (Exception e) {
+                        return "fail";
+                    }
+                default:
+                    return "fail";
+            }
         } else {
             return "fail";
         }

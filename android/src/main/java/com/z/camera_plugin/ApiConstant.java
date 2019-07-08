@@ -18,6 +18,9 @@ public class ApiConstant {
         if(split[1].equalsIgnoreCase("emotion")){
             return "ms";
         }
+        if(split[0].equalsIgnoreCase("1")){
+            return "mdesigner";
+        }
         return "baidu";
     }
 
@@ -43,6 +46,13 @@ public class ApiConstant {
 
             case "ocr":
                 return "ocr";
+
+            case "0":
+                return "plantDetect";
+
+            case "1":
+                return "animalDetect";
+
             default:
                 return "emotion";
         }
