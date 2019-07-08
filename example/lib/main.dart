@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
     String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      platformVersion = await CameraPlugin.gotoCamera("1,0");
+      platformVersion = await CameraPlugin.gotoCamera("公司名,1,0");
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }

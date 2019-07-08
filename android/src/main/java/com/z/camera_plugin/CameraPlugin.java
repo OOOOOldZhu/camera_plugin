@@ -39,6 +39,14 @@ public class CameraPlugin implements MethodCallHandler {
     }
 
     private void showScreen(String initV, final Result result) {
+
+        //更换上传图片的URL
+        String compName = initV.substring(0,initV.indexOf(","));
+        ApiConstant.baseUrl = compName;
+
+
+        // 裁剪URL
+        initV = initV.substring(initV.indexOf(",")+1);
         new CameraDialog(registrar.activity()) {
             @Override
             public void onAfter(String str) {
