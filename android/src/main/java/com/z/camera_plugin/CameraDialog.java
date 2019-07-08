@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.SyncStateContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -67,7 +68,6 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
     private Camera mCamera;
     private int cameraPosition = 0;//0代表前置摄像头,1代表后置摄像头,默认打开前置摄像头
     SurfaceHolder holder;
-    private String responseJson = "";
     SurfaceView mSurfaceView;
     ImageButton openLight;
     View focusIndex;
@@ -83,12 +83,9 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
     Camera.Parameters parameters;
     private Handler handler = new Handler();
     boolean safeToTakePicture = true;
-    private String specialMode;
     private String picPath;
     private CircularProgressButton circularProgressButton;
-    private View toprly;
     private ImageView imageView_onActivity;
-    String userId,userName,groupId;
     boolean button_takePhoto_has_taked=false;
     private ImageView backButton;
     private ImageView lookPictureIv_tuku;
@@ -101,11 +98,12 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
         super(activity, R.layout.activity_camera);
     }
 
-    public abstract void onAfter(View v);
+    public abstract void onAfter(String str);
 
-    @Override
-    public void initView(View view) {
-        root = view;
+    String initedStr = "";
+
+    public CameraDialog setDefult (String str){
+        initedStr = str;
 
         initImagePicker();
 
@@ -114,6 +112,12 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
         initView();
 
         initData();
+        return this;
+    }
+
+    @Override
+    public void initView(View view) {
+        root = view;
     }
 
 
@@ -123,7 +127,6 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
         openLight = (ImageButton) root.findViewById(R.id.openLight);
         focusIndex = root.findViewById(R.id.focus_index);
         bootomRly = root.findViewById(R.id.bootomRly);
-        toprly = root.findViewById(R.id.topRly);
         circularProgressButton = (CircularProgressButton) root.findViewById(R.id.circularProgressButton);
 
         backButton = (ImageView) root.findViewById(R.id.back11);
@@ -266,10 +269,12 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
                         Matrix matrix = new Matrix();
                         switch (cameraPosition) {
                             case 0:// 大摄像头
-                                matrix.preRotate(90);
+                                // todo 手机横屏显示就注释掉
+                                //matrix.preRotate(90);
                                 break;
                             case 1: // 小摄像头 自拍
-                                matrix.preRotate(270);
+                                // todo 手机横屏显示就注释掉
+                                //matrix.preRotate(270);
                                 break;
                         }
                         //matrix.setScale(0.5f, 0.5f);// 压缩完 将近400 KB
@@ -293,25 +298,47 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
             }).start();
         }
     };
+
     public void startPic(String picPath) {
         updataProgressBar(); //进度条转圈
         File file = new File(picPath);
         RequestBody imageBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         MultipartBody.Part imageBodyPart = MultipartBody.Part.createFormData("file", file.getName(), imageBody);
-        Log.d(TAG, "startPic url: " + "https://mproxy.microduino.cn" + specialMode);  //   人脸识别  /baidu/faceAddUser
-        String company = specialMode.substring(1, specialMode.lastIndexOf("/"));
-        String service = specialMode.substring(specialMode.lastIndexOf("/") + 1);
 
         //哪个公司 company（比如百度、微软公司）  、 哪个服务 service（添加用户、删除用户等）
 
-//        AIApi.initByBaseURL(CameraActivity.this, "https://mproxy.microduino.cn");
-//        if (service.equals("faceAddUser") || service.equals("faceDeleteUser") || service.equals("faceIdentify")) {
-//            faseProcess(company, service, imageBodyPart);
-//        } else {
-//            imageProcess(company, service, imageBodyPart);
-//        }
+        AIApi.initByBaseURL(activity, ApiConstant.baseUrl);
+        String company = ApiConstant.getCompany(initedStr); // 0,emotion
+        String service = ApiConstant.getService(initedStr);
+
+        AIApi.uploadPic(company, service, imageBodyPart)  //   图像识别specialMode =   /ms/emotion
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        try {
+                            if (response != null && response.body() != null) {
+                                String res = response.body().string();
+                                Log.d(TAG, "发送图片返回结果。。。。。。。: " + res);
+                                after(AIResult.getResult(initedStr,res));
+                            }
+                        } catch (Exception e) {
+                            Log.d(TAG, "onResponse e: " + e.toString());
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.d(TAG, "onFailure: " + t.toString());
+                        after("net fail");
+                    }
+                });
     }
 
+    void after(String str){
+        onAfter(str);
+        dismissDialog();
+    }
 
     int updataProgressBar_i = 0;
 
@@ -622,50 +649,38 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-//            case R.id.back:
-//                Intent intent1 = new Intent();
-//                if(picPath==null)picPath="";
-//                if(responseJson==null)responseJson="{}";
-//                intent1.putExtra(MCameraView.PICPATH, picPath);
-//                intent1.putExtra(MCameraView.JSON, responseJson);
-//                setResult(112, intent1);  // 返回到 dashboard
-//                finish();
-//                break;
-//
-//            case R.id.lookPictureIv:
-//                Intent intent = new Intent(CameraActivity.this, ImageGridActivity.class);
-//                startActivityForResult(intent, MCameraView.CAMERA_TO_IMAGEGRID);
-//                break;
-//
-//            case R.id.takePhoto:
-//                if(button_takePhoto_has_taked==true){
-//                    return;
-//                }
-//                boolean isOK = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-//                if (isOK == true) {
-//                    if (safeToTakePicture) {
-//                        safeToTakePicture = false;
-//                        mCamera.takePicture(null, null, takePhotoCallback);
-//                    }
-//                } else {
-//                    ActivityCompat.requestPermissions(this,
-//                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-//                }
-//                button_takePhoto_has_taked=true;
-//                break;
-//            case R.id.openLight:
-//                turnLight(mCamera);
-//                break;
-//
-//            case R.id.cameraSwitch:
-//                releaseCamera();
-//                cameraPosition = (cameraPosition + 1) % mCamera.getNumberOfCameras();
-//                mCamera = getCamera(cameraPosition);
-//                if (holder != null) {
-//                    startPreview(mCamera, holder);
-//                }
-//                break;
+        int i = v.getId();
+        if (i == R.id.back11) {
+            after("fail");
+        } else if (i == R.id.lookPictureIv) {
+            Intent intent = new Intent(activity, ImageGridActivity.class);
+            activity.startActivityForResult(intent, 110);
+
+        } else if (i == R.id.takePhoto) {
+            if (button_takePhoto_has_taked == true) {
+                return;
+            }
+            boolean isOK = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+            if (isOK == true) {
+                if (safeToTakePicture) {
+                    safeToTakePicture = false;
+                    mCamera.takePicture(null, null, takePhotoCallback);
+                }
+            } else {
+                ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+            button_takePhoto_has_taked = true;
+
+        } else if (i == R.id.openLight) {
+            turnLight(mCamera);
+
+        } else if (i == R.id.cameraSwitch) {
+            releaseCamera();
+            cameraPosition = (cameraPosition + 1) % mCamera.getNumberOfCameras();
+            mCamera = getCamera(cameraPosition);
+            if (holder != null) {
+                startPreview(mCamera, holder);
+            }
 
         }
 

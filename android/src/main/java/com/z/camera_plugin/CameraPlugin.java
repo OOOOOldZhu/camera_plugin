@@ -35,11 +35,11 @@ public class CameraPlugin implements MethodCallHandler {
   private void showScreen(final Result result){
     new CameraDialog(registrar.activity()) {
       @Override
-      public void onAfter(View v) {
+      public void onAfter(String str) {
         //todo 拍照完毕后要做的事情
-        result.success("wan cheng");
+        result.success(str);
       }
-    }.showDialog();
+    }.setDefult("0,ocr").showDialog();
   }
 
 }
