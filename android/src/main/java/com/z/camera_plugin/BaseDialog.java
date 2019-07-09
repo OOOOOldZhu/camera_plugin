@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.z.camera_plugin.R;
-
 /*
  * ：Created by z on 2019/1/16
  */
