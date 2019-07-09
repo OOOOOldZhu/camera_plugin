@@ -1,10 +1,8 @@
 package com.z.camera_plugin;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -29,8 +27,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.dd.CircularProgressButton;
-import com.lzy.imagepicker.ImagePicker;
-import com.lzy.imagepicker.ui.ImageGridActivity;
+//import com.lzy.imagepicker.ImagePicker;
+//import com.lzy.imagepicker.ui.ImageGridActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -91,7 +89,7 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
     public CameraDialog setDefult (String str){
         initedStr = str;
 
-        initImagePicker();
+        //initImagePicker();
 
         CameraUtil.init(activity);
 
@@ -116,12 +114,12 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
         circularProgressButton = (CircularProgressButton) root.findViewById(R.id.circularProgressButton);
 
         backButton = (ImageView) root.findViewById(R.id.back11);
-        lookPictureIv_tuku = (ImageView) root.findViewById(R.id.lookPictureIv);
+        //lookPictureIv_tuku = (ImageView) root.findViewById(R.id.lookPictureIv);
         button_takePhoto = (Button) root.findViewById(R.id.takePhoto);
         button_cameraSwitch = (ImageButton) root.findViewById(R.id.cameraSwitch);
 
         backButton.setOnClickListener(this);
-        lookPictureIv_tuku.setOnClickListener(this);
+        //lookPictureIv_tuku.setOnClickListener(this);
         button_takePhoto.setOnClickListener(this);
         openLight.setOnClickListener(this);
         button_cameraSwitch.setOnClickListener(this);
@@ -602,14 +600,14 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
         return camera;
     }
 
-    public void initImagePicker() {
-        ImagePicker imagePicker = ImagePicker.getInstance();
-        imagePicker.setImageLoader(new CustomImageLoader());   //设置图片加载器
-        imagePicker.setMultiMode(false);
-        imagePicker.setShowCamera(false);  //显示拍照按钮
-        imagePicker.setCrop(false);        //允许裁剪（单选才有效）
-        imagePicker.setSelectLimit(1);    //选中数量限制
-    }
+//    public void initImagePicker() {
+//        ImagePicker imagePicker = ImagePicker.getInstance();
+//        imagePicker.setImageLoader(new CustomImageLoader());   //设置图片加载器
+//        imagePicker.setMultiMode(false);
+//        imagePicker.setShowCamera(false);  //显示拍照按钮
+//        imagePicker.setCrop(false);        //允许裁剪（单选才有效）
+//        imagePicker.setSelectLimit(1);    //选中数量限制
+//    }
 
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -638,11 +636,11 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
         int i = v.getId();
         if (i == R.id.back11) {
             after("fail");
-        } else if (i == R.id.lookPictureIv) {
-            Intent intent = new Intent(activity, ImageGridActivity.class);
-            activity.startActivityForResult(intent, 110);
+        }/* else if (i == R.id.lookPictureIv) {
+//            Intent intent = new Intent(activity, ImageGridActivity.class);
+//            activity.startActivityForResult(intent, 110);
 
-        } else if (i == R.id.takePhoto) {
+        }*/ else if (i == R.id.takePhoto) {
             if (button_takePhoto_has_taked == true) {
                 return;
             }

@@ -95,7 +95,7 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/camera_activity_camera" />
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/lookPictureIv"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -103,7 +103,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="20dp"
                 android:padding="5dp"
-                android:src="@drawable/camera_activity_youxiajiao" />
+                android:src="@drawable/camera_activity_youxiajiao" />-->
         </RelativeLayout>
 
         <View
