@@ -15,8 +15,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -648,14 +646,14 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
             if (button_takePhoto_has_taked == true) {
                 return;
             }
-            boolean isOK = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+            boolean isOK = true;//ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
             if (isOK == true) {
                 if (safeToTakePicture) {
                     safeToTakePicture = false;
                     mCamera.takePicture(null, null, takePhotoCallback);
                 }
             } else {
-                ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                //ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             }
             button_takePhoto_has_taked = true;
 
