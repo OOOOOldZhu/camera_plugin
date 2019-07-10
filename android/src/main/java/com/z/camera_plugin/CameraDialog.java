@@ -85,10 +85,10 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
     public abstract void onAfter(String str);
 
     String initedStr = "";
-
+    String time;
     public CameraDialog setDefult (String str){
         initedStr = str;
-
+        time = ApiConstant.getDelayTime(initedStr);
         //initImagePicker();
 
         CameraUtil.init(activity);
@@ -533,9 +533,19 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
             //亲测的一个方法 基本覆盖所有手机 将预览矫正
             CameraUtil.getInstance().setCameraDisplayOrientation(activity, cameraPosition, camera);
             camera.startPreview();
+            delayTake();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /*
+    *   倒计时拍照
+    */
+
+    void delayTake(){
+        //todo 根据String time = -1 开始延时操作
+        
     }
 
     /**

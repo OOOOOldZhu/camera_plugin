@@ -44,8 +44,8 @@ public class CameraPlugin implements MethodCallHandler {
         String compName = initV.substring(0, initV.indexOf(","));
         ApiConstant.baseUrl = "https://mproxy." + compName + ".cn";
 
-
-        // 裁剪URL
+        //0人物识别
+        // 0,emotion,-1
         initV = initV.substring(initV.indexOf(",") + 1);
 
         Log.d("", "- - - - - - - - - - - - - - - - - - - - - > " + ApiConstant.baseUrl + "  ,initV = " + initV);

@@ -58,4 +58,15 @@ public class ApiConstant {
         }
     }
 
+    static String getDelayTime(String initedStr){
+        if(initedStr.equalsIgnoreCase("")){
+            return "-1";
+        }
+        String[] split = initedStr.split(",");
+        if(split.length >= 3){
+            return split[2];
+        }
+        return "-1";
+    }
+
 }
