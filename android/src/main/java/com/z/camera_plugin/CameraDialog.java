@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,10 +26,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.dd.CircularProgressButton;
 //import com.lzy.imagepicker.ImagePicker;
 //import com.lzy.imagepicker.ui.ImageGridActivity;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -542,10 +545,46 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
     /*
     *   倒计时拍照
     */
+    int tim;
+    private Handler handler2;
 
-    void delayTake(){
+    void delayTake() {
         //todo 根据String time = -1 开始延时操作
-        
+        if (!time.equals("-1")) {
+            tim = Integer.parseInt(time);
+            if (activity != null) activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ((TextView) root.findViewById(R.id.delay_tv)).setVisibility(View.VISIBLE);
+                }
+            });
+            handler2 = new Handler() {
+                public void handleMessage(android.os.Message msg) {
+                    switch (msg.what) {
+                        case 0:
+                            if (activity != null) activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((TextView) root.findViewById(R.id.delay_tv)).setText("" + tim);
+                                    if (tim == 0) {
+                                        //拍照并停止循环
+                                        ((TextView) root.findViewById(R.id.delay_tv)).setVisibility(View.GONE);
+                                        onTakeBtn();
+                                        handler2.removeCallbacksAndMessages(null);
+                                        return;
+                                    }
+                                    tim -= 1;
+                                    handler2.sendEmptyMessageDelayed(0, 1000);
+                                }
+                            });
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            };
+            handler2.sendEmptyMessageDelayed(0, 2000);
+        }
     }
 
     /**
@@ -651,19 +690,7 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
 //            activity.startActivityForResult(intent, 110);
 
         }*/ else if (i == R.id.takePhoto) {
-            if (button_takePhoto_has_taked == true) {
-                return;
-            }
-            boolean isOK = true;//ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-            if (isOK == true) {
-                if (safeToTakePicture) {
-                    safeToTakePicture = false;
-                    mCamera.takePicture(null, null, takePhotoCallback);
-                }
-            } else {
-                //ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-            }
-            button_takePhoto_has_taked = true;
+            onTakeBtn();
 
         } else if (i == R.id.openLight) {
             turnLight(mCamera);
@@ -678,5 +705,20 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
 
         }
 
+    }
+    void onTakeBtn(){
+        if (button_takePhoto_has_taked == true) {
+            return;
+        }
+        boolean isOK = true;//ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        if (isOK == true) {
+            if (safeToTakePicture) {
+                safeToTakePicture = false;
+                mCamera.takePicture(null, null, takePhotoCallback);
+            }
+        } else {
+            //ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+        button_takePhoto_has_taked = true;
     }
 }
