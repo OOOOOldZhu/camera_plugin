@@ -550,7 +550,7 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
 
     void delayTake() {
         //todo 根据String time = -1 开始延时操作
-        if (!time.equals("-1")) {
+        if (!time.equals("-1") || !time.equals("-0.001")) {
             tim = Integer.parseInt(time);
             if (activity != null) activity.runOnUiThread(new Runnable() {
                 @Override
