@@ -87,11 +87,11 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
 
     public abstract void onAfter(String str);
 
-    String initedStr = "";
-    String time;
-    public CameraDialog setDefult (String str){
-        initedStr = str;
-        time = ApiConstant.getDelayTime(initedStr);
+    String jsonStr = "";
+
+    public CameraDialog setDefult (String jsonStr){
+        this.jsonStr = jsonStr;
+
         //initImagePicker();
 
         CameraUtil.init(activity);
@@ -295,8 +295,8 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
         //哪个公司 company（比如百度、微软公司）  、 哪个服务 service（添加用户、删除用户等）
 
         AIApi.initByBaseURL(activity, ApiConstant.baseUrl);
-        String company = ApiConstant.getCompany(initedStr); // 0,emotion
-        String service = ApiConstant.getService(initedStr);
+        String company = ApiConstant.getCompany(jsonStr); // 0,emotion
+        String service = ApiConstant.getService(jsonStr);
 
         AIApi.uploadPic(company, service, imageBodyPart)  //   图像识别specialMode =   /ms/emotion
                 .enqueue(new Callback<ResponseBody>() {
@@ -306,7 +306,7 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
                             if (response != null && response.body() != null) {
                                 String res = response.body().string();
                                 Log.d(TAG, "发送图片返回结果。。。。。。。: " + res);
-                                after(AIResult.getResult(initedStr,res));
+                                after(AIResult.getResult(jsonStr,res));
                             }
                         } catch (Exception e) {
                             Log.d(TAG, "onResponse e: " + e.toString());
@@ -545,16 +545,14 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
     /*
     *   倒计时拍照
     */
-    int tim;
     private Handler handler2;
 
+    int time;
+
     void delayTake() {
+        time = ApiConstant.getDelayTime(jsonStr);
         //todo 根据String time = -1 开始延时操作
-        if (!time.equals("-1") || !time.equals("-0.001")) {
-            tim = Integer.parseInt(time);
-            if(tim == -1){
-                return;
-            }
+        if (time != -1 && time != -0.001) {
             if (activity != null) activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -568,15 +566,15 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
                             if (activity != null) activity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ((TextView) root.findViewById(R.id.delay_tv)).setText("" + tim);
-                                    if (tim == 0) {
+                                    ((TextView) root.findViewById(R.id.delay_tv)).setText("" + time);
+                                    if (time == 0) {
                                         //拍照并停止循环
                                         ((TextView) root.findViewById(R.id.delay_tv)).setVisibility(View.GONE);
                                         onTakeBtn();
                                         handler2.removeCallbacksAndMessages(null);
                                         return;
                                     }
-                                    tim -= 1;
+                                    time -= 1;
                                     handler2.sendEmptyMessageDelayed(0, 1000);
                                 }
                             });
