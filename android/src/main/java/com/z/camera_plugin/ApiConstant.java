@@ -63,7 +63,10 @@ public class ApiConstant {
             return "-1";
         }
         String[] split = initedStr.split(",");
-        if(split.length >= 3){
+        if(split.length >= 3 &&
+           !split[0].equalsIgnoreCase("0") && // 植物识别
+           !split[0].equalsIgnoreCase("1")){  // 动物识别
+            //植物识别 0,-1,0
             return split[2];
         }
         return "-1";
