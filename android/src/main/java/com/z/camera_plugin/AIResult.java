@@ -69,7 +69,7 @@ public class AIResult {
                     }
                 case "skin":
                     try {
-                        String s = new JSONObject(res).getJSONObject("data").getJSONArray("result").getJSONObject(0).get("skin").toString();
+                        String s = new JSONObject(res).getJSONObject("data").getJSONArray("result").getJSONObject(0).get("race").toString();
                         return s;
                     } catch (Exception e) {
                         return "fail";
