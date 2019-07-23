@@ -146,15 +146,17 @@ public class AIResult {
                                 }
                             }
                             int num = jsonOBJ.getJSONObject("platOrAnimal").getInt("resultCount");
+
+                            String name = "";
+                            for (int i = 0; i < arrayList.size(); i++) {
+                                name = arrayList.get(i).getString("name")+",";
+                            }
+                            if(name.lastIndexOf(",") == name.length()-1){
+                                //'哈士奇,兔八哥,'
+                                name= name.substring(0,name.length()-1);
+                            }
+                            Log.d("", "动植物识别的最后多项个结果 - - - - - - - - - - - - - - - - - - > "+name);
                             if( num == 0 ){
-                                String name = "";
-                                for (int i = 0; i < arrayList.size(); i++) {
-                                    name = arrayList.get(i).getString("name")+",";
-                                }
-                                if(name.lastIndexOf(",") == name.length()-1){
-                                    //'哈士奇,兔八哥,'
-                                    name= name.substring(0,name.length()-1);
-                                }
                                 return name;
                             }
                             //比如取第三个值 3
