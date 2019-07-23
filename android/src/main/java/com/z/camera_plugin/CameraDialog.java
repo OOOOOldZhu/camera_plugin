@@ -552,6 +552,9 @@ public abstract class CameraDialog extends BaseDialog implements SurfaceHolder.C
         //todo 根据String time = -1 开始延时操作
         if (!time.equals("-1") || !time.equals("-0.001")) {
             tim = Integer.parseInt(time);
+            if(tim == -1){
+                return;
+            }
             if (activity != null) activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
