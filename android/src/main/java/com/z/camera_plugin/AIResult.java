@@ -31,9 +31,11 @@ public class AIResult {
                     }
                 }
         */
+    static String TAG = "com.microduino.mDesigner";
+
     static String getResult(String jsonStr, String res) {
         try {
-            Log.d("", "- - - - - - - - - - - - - - - - - - - - - - - - > getResult（ ） ");
+            Log.d(TAG, "- - - - - - - - - - - - - - - - - - - - - - - - > getResult（ ） ");
             JSONObject jsonOBJ = new JSONObject(jsonStr);
             boolean isPeaple = jsonOBJ.getBoolean("isPeaple"); // 0 or 1
             String type = "emotion"; // emotion  、 gender 、  age 、  skin
@@ -42,7 +44,7 @@ public class AIResult {
             } else {
                 type = jsonOBJ.getJSONObject("platOrAnimal").getString("type");
             }
-            Log.d("", "- - - - - - - - - - - - - - - - - - - - - - - - > "+isPeaple+" "+type);
+            Log.d(TAG, "- - - - - - - - - - - - - - - - - - - - - - - - > "+isPeaple+" "+type);
             if (isPeaple) {
                 switch (type) {
                     case "emotion":
@@ -138,7 +140,7 @@ public class AIResult {
                                 for (int j = 0; j < arrayList.size() - 1 - i; j++) {
                                     JSONObject temp;
                                     if (arrayList.get(j + 1).getDouble("score") >
-                                        arrayList.get(j).getDouble("score")) {
+                                            arrayList.get(j).getDouble("score")) {
 
                                         temp = arrayList.get(j + 1);
                                         arrayList.set(j + 1, arrayList.get(j));
@@ -151,13 +153,13 @@ public class AIResult {
 
                             String name = "";
                             for (int i = 0; i < arrayList.size(); i++) {
-                                name = arrayList.get(i).getString("name")+",";
+                                name = name + arrayList.get(i).getString("name")+",";
                             }
                             if(name.lastIndexOf(",") == name.length()-1){
                                 //'哈士奇,兔八哥,'
                                 name= name.substring(0,name.length()-1);
                             }
-                            Log.d("", "动植物识别的最后多项个结果 - - - - - - - - - - - - - - - - - - > "+name);
+                            Log.d(TAG, "动植物识别的最后多项个结果 - - - - - - - - - - - - - - - - - - > "+name+"  arrayList.size = "+arrayList.size());
                             if( num == 0 ){
                                 return name;
                             }
