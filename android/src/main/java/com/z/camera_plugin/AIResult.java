@@ -33,6 +33,7 @@ public class AIResult {
         */
     static String getResult(String jsonStr, String res) {
         try {
+            Log.d("", "- - - - - - - - - - - - - - - - - - - - - - - - > getResult（ ） ");
             JSONObject jsonOBJ = new JSONObject(jsonStr);
             boolean isPeaple = jsonOBJ.getBoolean("isPeaple"); // 0 or 1
             String type = "emotion"; // emotion  、 gender 、  age 、  skin
@@ -41,6 +42,7 @@ public class AIResult {
             } else {
                 type = jsonOBJ.getJSONObject("platOrAnimal").getString("type");
             }
+            Log.d("", "- - - - - - - - - - - - - - - - - - - - - - - - > "+isPeaple+" "+type);
             if (isPeaple) {
                 switch (type) {
                     case "emotion":
