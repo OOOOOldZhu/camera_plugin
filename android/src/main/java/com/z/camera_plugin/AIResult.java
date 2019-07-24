@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AIResult {
     /* let data = {
@@ -153,7 +155,8 @@ public class AIResult {
 
                             String name = "";
                             for (int i = 0; i < arrayList.size(); i++) {
-                                name = name + arrayList.get(i).getString("name")+",";
+                                String na = arrayList.get(i).getString("name");
+                                name = name + na +",";
                             }
                             if(name.lastIndexOf(",") == name.length()-1){
                                 //'哈士奇,兔八哥,'
@@ -164,7 +167,8 @@ public class AIResult {
                                 return name;
                             }
                             //比如取第三个值 3
-                            return arrayList.get(num-1).getString("name");
+                            String na = arrayList.get(num-1).getString("name");
+                            return na;
                         } catch (Exception e) {
                             return "fail";
                         }
